@@ -13,18 +13,21 @@
 
 querystring = function(str) {
     var obj = {};
-    
-    (str || location.search).split(/^\?|&/)
+
+    (str || location.search).split(/^.*\?|&/)
         .filter(function(part) { return part; })
         .map(function(arg) {
-            var parts = arg.split(/=((?!=).*)/);
-            var val = parts[1] === '' ? null : parts[1];
-            if(!obj[parts[0]]) obj[parts[0]] = val;
+            var parts = arg.split(/=((?!=).*)/),
+                key = decodeURIComponent(parts[0]),
+                val = parts[1] === '' ? null : parts[1]
+            ;
+
+            if(!obj[key]) obj[key] = val;
             else {
-                if(!Array.isArray(obj[parts[0]])) obj[parts[0]] = [obj[parts[0]]];
-                obj[parts[0]].push(val);
+                if(!Array.isArray(obj[key])) obj[key] = [obj[key]];
+                obj[key].push(val);
             }
         });
-    
+
     return obj;
 }
